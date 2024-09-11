@@ -1,6 +1,7 @@
 package com.guayaba.shotokankata.ui
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,15 +21,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -53,15 +59,21 @@ fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: () -> U
             })
         },
     ) { innerPadding ->
-        val sessionCount = remember {
-           mutableIntStateOf(viewModel.getSessionsForKata(kataInfo))
+        var sessionCount by remember {
+            mutableIntStateOf(0)
+        }
+        val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
+
+        LaunchedEffect(sessionCount) {
+            sessionCount = viewModel.getSessionsForKata(info = kataInfo).count
         }
 
         Box(Modifier.padding(innerPadding)) {
             Column(Modifier.padding(16.dp)) {
 
                 Text(
-                    text = "Total sessions: ${sessionCount.intValue}",
+                    text = "Total sessions: $sessionCount",
                     fontSize = TextUnit(20.0F, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold
                 )
@@ -75,8 +87,18 @@ fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: () -> U
                 ) {
                     Text(text = "Practiced ${kataInfo.kataName} today?")
                     OutlinedButton(onClick = {
-                        viewModel.updateKata(kataInfo)
-                        sessionCount.intValue = viewModel.getSessionsForKata(kataInfo)
+                        coroutineScope.launch {
+                            if (
+                                viewModel.updateKata(kataInfo)) {
+                                sessionCount++
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Practice for ${kataInfo.kataName} already recorded for today",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     }) {
                         Text(text = "Yes")
                     }
@@ -89,7 +111,7 @@ fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: () -> U
                     Text(text = "Decrease one session")
                     OutlinedButton(onClick = {
                         viewModel.decreaseOneSession(kataInfo)
-                        sessionCount.intValue = viewModel.getSessionsForKata(kataInfo)
+//                        sessionCount.intValue = viewModel.getSessionsForKata(kataInfo)
                     }) {
                         Text(text = "-1")
                     }

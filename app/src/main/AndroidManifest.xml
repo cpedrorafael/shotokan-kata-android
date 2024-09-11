@@ -15,6 +15,7 @@
         android:roundIcon="@drawable/shotokan"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShotokanKata"
+        android:name=".ui.KataApplication"
         tools:targetApi="31">
         <activity
             android:name=".ui.MainActivity"

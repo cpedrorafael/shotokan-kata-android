@@ -1,22 +1,35 @@
 package com.guayaba.shotokankata.ui
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import com.guayaba.shotokankata.data.KataStorageImpl
+import com.guayaba.shotokankata.data.kata_records.KataCount
+import com.guayaba.shotokankata.data.kata_records.KataRecord
+import com.guayaba.shotokankata.data.kata_records.KataStorageImpl
+import kotlinx.coroutines.flow.MutableStateFlow
 
-class KataViewModel(val context: Context) : ViewModel() {
-    private val storage = KataStorageImpl(context)
+class KataViewModel : ViewModel() {
+    private lateinit var storage: KataStorageImpl
+    private val allSessionsFlow = MutableStateFlow<List<KataRecord>>(listOf())
 
-    fun updateKata(info: KataInfo) {
-        storage.addOneSession(info.id)
+    fun initStorage(context: Context) {
+        storage = KataStorageImpl(context)
     }
 
-    fun getSessionsForKata(info: KataInfo): Int {
-        return storage.getAllSessionsForKata(info.id).sessionCount
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun updateKata(info: KataInfo): Boolean {
+        return storage.addOneSession(info.id)
     }
 
-    fun getAllKataRecords() = storage.getAllSessions().sortedByDescending { it.sessionCount }
+    suspend fun getSessionsForKata(info: KataInfo): KataCount {
+        return storage.getAllSessionsForKata(info.id)
+    }
+
+    //
+    suspend fun getAllKataRecords() = storage.getAllSessions()
 
     fun decreaseOneSession(kataInfo: KataInfo) =
         storage.decreaseOneSession(kataInfo.id)
+
 }

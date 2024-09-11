@@ -38,7 +38,8 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = KataViewModel(context = this)
+        viewModel = KataViewModel()
+        viewModel.initStorage(this)
         setContent {
             ShotokanKataTheme {
                 Surface(
