@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,12 +68,12 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
             state.value.let { state ->
                 if (state.isFinished) {
                     Column(Modifier.align(Alignment.Center)) {
-                        Text("Yame!")
+                        Text("YAME!!")
                         Text("Your score is: ${viewModel.getScore()}")
                         OutlinedButton(onClick = {
                             viewModel.initWordQuiz(quizId)
                         }) {
-                           Text("Start Over")
+                            Text("Start Over")
                         }
                     }
                 } else {
@@ -97,8 +96,10 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
 @Composable
 fun QuestionView(question: QuizQuestion, onAnswer: (String) -> Unit) {
     Log.d("QuestionView", question.allAnswers.toString())
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
@@ -114,7 +115,8 @@ fun QuestionView(question: QuizQuestion, onAnswer: (String) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(question.allAnswers.size) {
-                TextAnswerButton(answer = question.allAnswers[it]){ answer ->
+                val variant = question.allAnswers[it]
+                TextAnswerButton(answer = variant) { answer ->
                     onAnswer(answer)
                 }
             }

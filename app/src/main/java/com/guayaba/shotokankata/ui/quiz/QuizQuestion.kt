@@ -6,10 +6,15 @@ data class QuizQuestion(
     val answer: String,
     val wrongAnswers: List<String>
 ) {
-    val allAnswers: List<String>
-        get() {
-            val list = mutableListOf(answer)
-            list.addAll(wrongAnswers)
-            return list.shuffled()
-        }
+    private var _allAnswers: List<String>
+
+    init {
+        val list = mutableListOf(answer)
+        list.addAll(wrongAnswers)
+        _allAnswers = list.shuffled()
+    }
+
+    val allAnswers
+        get() = _allAnswers
+
 }

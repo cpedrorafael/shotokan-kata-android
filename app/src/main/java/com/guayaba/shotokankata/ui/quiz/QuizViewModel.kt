@@ -38,22 +38,29 @@ class QuizViewModel : ViewModel() {
 
     private fun initKataMovesQuiz() {
         quizId = 0
-        val questionsCount = KataInfo.entries.size
-        val list = mutableListOf<QuizQuestion>()
-        for (i in 1..questionsCount) {
+        val questionItems = KataInfo.entries.map { it.moves }
+        val resultList = mutableListOf<QuizQuestion>()
+        for (i in 1..questionItems.size ) {
+            val currentKata = KataInfo.findById(i)
+
             //get random indices to display wrong answers
-            val wrongAnswerIndices = getRandomIndexList(1, questionsCount, i, 3)
-            val wrongAnswers = wrongAnswerIndices.map { KataInfo.findById(it).moves.toString() }
+            val wrongAnswers = questionItems
+                .shuffled()
+                .distinct()
+                .filter { it != questionItems[i - 1] }
+                .map { it.toString() }
+                .take(3)
+
             val question = QuizQuestion(
                 i.toLong(),
-                "How many moves are there in ${KataInfo.findById(i).kataName}?",
-                KataInfo.findById(i).moves.toString(),
+                "How many moves are there in ${currentKata.kataName}?",
+                currentKata.moves.toString(),
                 wrongAnswers
             )
-            list.add(question)
+            resultList.add(question)
         }
 
-        questions.addAll(list.shuffled())
+        questions.addAll(resultList.shuffled())
 
         loadNextQuestion()
     }
@@ -68,11 +75,8 @@ class QuizViewModel : ViewModel() {
 
     fun getScore() = score
 
-    private fun cleanup() {
-
-    }
-
     private fun loadNextQuestion() = viewModelScope.launch {
+        Log.d(TAG, "loading question")
         if (questions.peek() == null) {
             _questionFlow.emit(QuizState(null, true))
             saveResult(
@@ -95,7 +99,7 @@ class QuizViewModel : ViewModel() {
             throw IllegalArgumentException("The 'exclude' parameter must be within the specified range.")
         }
 
-        return (from until to).filter { it != exclude }.distinct().shuffled().take(take)
+        return (from until to).distinct().filter { it != exclude }.shuffled().take(take)
     }
 
 }
