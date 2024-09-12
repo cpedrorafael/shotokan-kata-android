@@ -29,14 +29,19 @@ import com.guayaba.shotokankata.ui.kata.KataList
 import com.guayaba.shotokankata.ui.kata.KataView
 import com.guayaba.shotokankata.ui.kata.KataViewModel
 import com.guayaba.shotokankata.ui.quiz.QuizList
+import com.guayaba.shotokankata.ui.quiz.QuizViewModel
+import com.guayaba.shotokankata.ui.quiz.WordQuiz
 import com.guayaba.shotokankata.ui.theme.ShotokanKataTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var kataViewModel: KataViewModel
+    private lateinit var quizViewModel: QuizViewModel
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         kataViewModel = KataViewModel()
+        quizViewModel = QuizViewModel()
         setContent {
             ShotokanKataTheme {
                 Surface(
@@ -51,20 +56,31 @@ class MainActivity : ComponentActivity() {
                             NotificationUtils.createNotificationChannel(this@MainActivity)
                             setDailyNotification()
                         }
-                        NavHost(navController = navController, startDestination = "home") {
-                            composable("home") { KataList(kataViewModel, navController) }
+                        NavHost(
+                            navController = navController,
+                            startDestination = Routes.HOME.route
+                        ) {
+                            composable(Routes.HOME.route) { KataList(kataViewModel, navController) }
                             composable(
-                                "details/{kataId}",
+                                Routes.DETAILS.route,
                                 arguments = listOf(navArgument("kataId") { type = NavType.IntType })
                             ) {
-                                val kataInfo = KataInfo.findById(it.arguments?.getInt("kataId")?: 1)!!
-                                KataView(kataViewModel, kataInfo){
+                                val kataInfo =
+                                    KataInfo.findById(it.arguments?.getInt("kataId") ?: 1)!!
+                                KataView(kataViewModel, kataInfo) {
                                     navController.popBackStack()
                                 }
                             }
-                            composable("quizzes") {
-                                QuizList()
+                            composable(Routes.QUIZZES.route) {
+                                QuizList(navController)
                             }
+                            composable(
+                                Routes.WORD_QUIZ.route + "/{quizId}",
+                                arguments = listOf(navArgument("quizId") { type = NavType.IntType })
+                                ) {
+                                    val quizId = it.arguments?.getInt("quizId") ?: 0
+                                    WordQuiz(viewModel = quizViewModel, navController, quizId)
+                                }
                         }
                     }
                 }

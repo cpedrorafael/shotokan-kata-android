@@ -60,7 +60,6 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun KataList(viewModel: KataViewModel, navController: NavHostController) {
-    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -131,7 +130,7 @@ fun KataList(viewModel: KataViewModel, navController: NavHostController) {
 
             KataInfo.entries.map {
                 KataListItem(
-                    info = KataInfo.findById(it.id)!!,
+                    info = KataInfo.findById(it.id),
                     viewModel = viewModel,
                     navController
                 )

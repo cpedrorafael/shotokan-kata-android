@@ -1,6 +1,6 @@
 package com.guayaba.shotokankata.data
 
-enum class KataInfo(val id: Int, val kataName: String, val japaneseName: String, moves: Int) {
+enum class KataInfo(val id: Int, val kataName: String, val japaneseName: String, val moves: Int) {
     HEIAN_SHODAN(1, "Heian Shodan", "平安初段", 21),
     HEIAN_NIDAN(2, "Heian Nidan", "平安二段", 26),
     HEIAN_SANDAN(3, "Heian Sandan", "平安三段", 20),
@@ -30,5 +30,6 @@ enum class KataInfo(val id: Int, val kataName: String, val japaneseName: String,
 
     companion object {
         fun findById(id: Int) = KataInfo.entries.find { it.id == id }
+            ?: throw IllegalStateException("Kata not found for provided ID")
     }
 }
