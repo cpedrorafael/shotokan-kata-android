@@ -1,3 +1,4 @@
 package com.guayaba.shotokankata.data.quizzes
 
-abstract class Quiz()
+
+data class Quiz(val id: Long, val name: String)
