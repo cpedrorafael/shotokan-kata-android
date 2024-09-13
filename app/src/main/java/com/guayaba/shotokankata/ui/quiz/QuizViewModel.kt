@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.guayaba.shotokankata.data.KataInfo
 import com.guayaba.shotokankata.data.quizzes.QuizResult
 import com.guayaba.shotokankata.ui.KataApplication.Companion.quizStorage
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +23,10 @@ class QuizViewModel : ViewModel() {
     private val questions: Queue<QuizQuestion> = LinkedList()
     private var score = 0
     private var quizId = 0L
+
+    private val _timerFlow: MutableStateFlow<TimerState> = MutableStateFlow(TimerState())
+    val timerFlow: StateFlow<TimerState> = _timerFlow
+    private var timerJob: Job? = null
 
     private fun saveResult(result: QuizResult) = viewModelScope.launch {
         quizStorage.saveResult(result)
@@ -88,20 +94,30 @@ class QuizViewModel : ViewModel() {
             )
         } else {
             _questionFlow.emit(QuizState(questions.poll()))
+            timerJob?.cancel()
+            timerJob = startQuestionTimer()
         }
     }
 
-    private fun getRandomIndexList(from: Int, to: Int, exclude: Int, take: Int): List<Int> {
-        if (to <= from) {
-            throw IllegalArgumentException("The 'to' parameter must be greater than the 'from' parameter.")
-        }
-        if (exclude !in from..to) {
-            throw IllegalArgumentException("The 'exclude' parameter must be within the specified range.")
+    private fun startQuestionTimer() = viewModelScope.launch {
+        var state = TimerState()
+        _timerFlow.value = state
+
+        delay(300L)
+
+        while (state.tick < state.total) {
+            delay(100L)
+            val newState = TimerState(state.tick + 100L, state.total)
+            state = newState
+            _timerFlow.value = state
         }
 
-        return (from until to).distinct().filter { it != exclude }.shuffled().take(take)
+        answerQuestion("")
     }
+
 
 }
 
 data class QuizState(val question: QuizQuestion?, val isFinished: Boolean = false)
+
+data class TimerState(val tick: Long = 0, val total: Long = 10000L)

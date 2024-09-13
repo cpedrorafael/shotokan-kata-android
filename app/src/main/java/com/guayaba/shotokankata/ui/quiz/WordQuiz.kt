@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,6 +24,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +37,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +88,7 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
                     }
                 } else {
                     state.question?.let { question ->
-                        QuestionView(question) { answer ->
+                        QuestionView(question, viewModel) { answer ->
                             viewModel.answerQuestion(answer)
                         }
                     } ?: run {
@@ -94,7 +104,7 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
 
 
 @Composable
-fun QuestionView(question: QuizQuestion, onAnswer: (String) -> Unit) {
+fun QuestionView(question: QuizQuestion, viewModel: QuizViewModel, onAnswer: (String) -> Unit) {
     Log.d("QuestionView", question.allAnswers.toString())
 
     Column(
@@ -121,6 +131,10 @@ fun QuestionView(question: QuizQuestion, onAnswer: (String) -> Unit) {
                 }
             }
         }
+
+        Spacer(Modifier.height(64.dp))
+
+        QuestionTimer(viewmodel = viewModel)
     }
 }
 
@@ -129,4 +143,15 @@ fun TextAnswerButton(answer: String, onAnswer: (String) -> Unit) {
     OutlinedButton(onClick = { onAnswer(answer) }, modifier = Modifier.padding(horizontal = 4.dp)) {
         Text(text = answer)
     }
+}
+
+@Composable
+fun QuestionTimer(viewmodel: QuizViewModel){
+    val state = viewmodel.timerFlow.collectAsState()
+
+    LinearProgressIndicator(
+        progress = { state.value.tick.toFloat() / state.value.total.toFloat() },
+        modifier = Modifier.fillMaxWidth(),
+    )
+
 }
