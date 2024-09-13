@@ -1,6 +1,5 @@
 package com.guayaba.shotokankata.ui.quiz
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guayaba.shotokankata.data.KataInfo
@@ -94,7 +93,6 @@ class QuizViewModel : ViewModel() {
     }
 
     private fun loadNextQuestion() = viewModelScope.launch {
-        Log.d(TAG, "loading question")
         if (questions.peek() == null) {
             _questionFlow.emit(QuizState(null, true))
             saveResult(
@@ -118,8 +116,8 @@ class QuizViewModel : ViewModel() {
         delay(300L)
 
         while (state.tick < state.total) {
-            delay(100L)
-            val newState = TimerState(state.tick + 100L, state.total)
+            delay(50L)
+            val newState = TimerState(state.tick + 50L, state.total)
             state = newState
             _timerFlow.value = state
         }
