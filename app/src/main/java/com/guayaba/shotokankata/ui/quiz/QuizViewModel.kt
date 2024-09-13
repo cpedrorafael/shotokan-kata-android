@@ -11,6 +11,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDateTime
 import java.util.LinkedList
 import java.util.Queue
@@ -36,6 +38,7 @@ class QuizViewModel : ViewModel() {
         score = 0
         this@QuizViewModel.quizId = quizId.toLong()
         questions.clear()
+        _questionFlow.value = QuizState(null, false)
 
         when (quizId) {
             0 -> initKataMovesQuiz()
@@ -72,6 +75,11 @@ class QuizViewModel : ViewModel() {
     }
 
     fun answerQuestion(answer: String) {
+
+        if(_questionFlow.value.isFinished) {
+            return
+        }
+
         if (answer == questionFlow.value.question!!.answer) {
             score++
         }
@@ -79,7 +87,11 @@ class QuizViewModel : ViewModel() {
         loadNextQuestion()
     }
 
-    fun getScore() = score
+
+    fun getScore(): Double {
+        val result = score.toDouble() / KataInfo.entries.size.toDouble() * 100.00
+        return BigDecimal(result).setScale(2, RoundingMode.HALF_EVEN).toDouble()
+    }
 
     private fun loadNextQuestion() = viewModelScope.launch {
         Log.d(TAG, "loading question")
@@ -88,7 +100,7 @@ class QuizViewModel : ViewModel() {
             saveResult(
                 QuizResult(
                     quizId = quizId,
-                    score = score.toDouble(),
+                    score = getScore(),
                     dateTime = LocalDateTime.now()
                 )
             )

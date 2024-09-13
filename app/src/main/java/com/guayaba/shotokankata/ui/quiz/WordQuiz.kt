@@ -32,10 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -78,11 +80,25 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
             state.value.let { state ->
                 if (state.isFinished) {
                     Column(Modifier.align(Alignment.Center)) {
-                        Text("YAME!!")
-                        Text("Your score is: ${viewModel.getScore()}")
-                        OutlinedButton(onClick = {
-                            viewModel.initWordQuiz(quizId)
-                        }) {
+                        Text(
+                            "YAME!!",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontSize = 30.sp
+                        )
+                        Spacer(modifier = Modifier.height(64.dp))
+                        Text(
+                            "Your score is: ${viewModel.getScore()}%",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(32.dp))
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                viewModel.initWordQuiz(quizId)
+                            }) {
                             Text("Start Over")
                         }
                     }
@@ -146,7 +162,7 @@ fun TextAnswerButton(answer: String, onAnswer: (String) -> Unit) {
 }
 
 @Composable
-fun QuestionTimer(viewmodel: QuizViewModel){
+fun QuestionTimer(viewmodel: QuizViewModel) {
     val state = viewmodel.timerFlow.collectAsState()
 
     LinearProgressIndicator(
