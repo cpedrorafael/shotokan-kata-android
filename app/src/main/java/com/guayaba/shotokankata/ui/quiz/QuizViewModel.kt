@@ -24,6 +24,7 @@ class QuizViewModel : ViewModel() {
     private val questions: Queue<QuizQuestion> = LinkedList()
     private var score = 0
     private var quizId = 0L
+    private val wrongAnswers = mutableListOf<String>()
 
     private val _timerFlow: MutableStateFlow<TimerState> = MutableStateFlow(TimerState())
     val timerFlow: StateFlow<TimerState> = _timerFlow
@@ -37,6 +38,7 @@ class QuizViewModel : ViewModel() {
         score = 0
         this@QuizViewModel.quizId = quizId.toLong()
         questions.clear()
+        wrongAnswers.clear()
         _questionFlow.value = QuizState(null, false)
 
         when (quizId) {
@@ -81,6 +83,9 @@ class QuizViewModel : ViewModel() {
 
         if (answer == questionFlow.value.question!!.answer) {
             score++
+        }else{
+            val currentQuestion = questions.element()
+            wrongAnswers.add(currentQuestion.question)
         }
 
         loadNextQuestion()
@@ -91,6 +96,8 @@ class QuizViewModel : ViewModel() {
         val result = score.toDouble() / KataInfo.entries.size.toDouble() * 100.00
         return BigDecimal(result).setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
+
+    fun getWrongAnswers() = wrongAnswers.toList()
 
     private fun loadNextQuestion() = viewModelScope.launch {
         if (questions.peek() == null) {

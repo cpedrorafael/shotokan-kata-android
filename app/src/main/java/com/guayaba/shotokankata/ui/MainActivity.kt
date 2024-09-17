@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,14 +35,12 @@ import com.guayaba.shotokankata.ui.quiz.WordQuiz
 import com.guayaba.shotokankata.ui.theme.ShotokanKataTheme
 
 class MainActivity : ComponentActivity() {
-    private lateinit var kataViewModel: KataViewModel
-    private lateinit var quizViewModel: QuizViewModel
+    private val kataViewModel: KataViewModel by viewModels()
+    private val quizViewModel: QuizViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        kataViewModel = KataViewModel()
-        quizViewModel = QuizViewModel()
         setContent {
             ShotokanKataTheme {
                 Surface(

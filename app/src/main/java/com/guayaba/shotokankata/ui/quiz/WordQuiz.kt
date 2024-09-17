@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -85,7 +87,11 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
         ) {
             state.value.let { state ->
                 if (state.isFinished) {
-                    Column(Modifier.align(Alignment.Center)) {
+                    Column(
+                        Modifier
+                            .align(Alignment.Center)
+                            .verticalScroll(rememberScrollState())
+                    ) {
                         Text(
                             "YAME!!",
                             modifier = Modifier.fillMaxWidth(),
@@ -107,6 +113,28 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
                             }) {
                             Text("Start Over")
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        val wrongAnswers = viewModel.getWrongAnswers()
+                        Text(
+                            "What you got wrong: ",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (wrongAnswers.isNotEmpty()) {
+                            Column(Modifier.fillMaxWidth()) {
+                                wrongAnswers.map {
+                                    Text(
+                                        text = it,
+                                        Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        }
+
                     }
                 } else {
                     state.question?.let { question ->
