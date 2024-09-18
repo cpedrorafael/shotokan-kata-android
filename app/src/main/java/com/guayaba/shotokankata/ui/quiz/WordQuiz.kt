@@ -62,12 +62,7 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Quizzes", fontSize = TextUnit(30.0F, TextUnitType.Sp))
-                }
+                Text("Quizzes", fontSize = TextUnit(30.0F, TextUnitType.Sp), textAlign = TextAlign.Left)
             }, navigationIcon = {
                 IconButton(onClick = {
                     navHostController.popBackStack()

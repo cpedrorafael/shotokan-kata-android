@@ -104,19 +104,6 @@ fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: () -> U
                         Text(text = "Yes")
                     }
                 }
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Decrease one session")
-                    OutlinedButton(onClick = {
-                        viewModel.decreaseOneSession(kataInfo)
-//                        sessionCount.intValue = viewModel.getSessionsForKata(kataInfo)
-                    }) {
-                        Text(text = "-1")
-                    }
-                }
             }
         }
     }
