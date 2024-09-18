@@ -12,7 +12,7 @@ android {
         applicationId = "com.guayaba.shotokankata"
         minSdk = 26
         targetSdk = 34
-        versionCode = 100001
+        versionCode = 100002
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

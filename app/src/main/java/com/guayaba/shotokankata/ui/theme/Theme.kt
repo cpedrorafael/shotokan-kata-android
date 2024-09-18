@@ -64,7 +64,7 @@ fun ShotokanKataTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = OrientaTypography,
         content = content
     )
 }

@@ -29,6 +29,8 @@ import com.guayaba.shotokankata.data.KataInfo
 import com.guayaba.shotokankata.ui.kata.KataList
 import com.guayaba.shotokankata.ui.kata.KataView
 import com.guayaba.shotokankata.ui.kata.KataViewModel
+import com.guayaba.shotokankata.ui.philosophy.NijuKun
+import com.guayaba.shotokankata.ui.philosophy.PhilosophyViewModel
 import com.guayaba.shotokankata.ui.quiz.QuizList
 import com.guayaba.shotokankata.ui.quiz.QuizViewModel
 import com.guayaba.shotokankata.ui.quiz.WordQuiz
@@ -37,8 +39,8 @@ import com.guayaba.shotokankata.ui.theme.ShotokanKataTheme
 class MainActivity : ComponentActivity() {
     private val kataViewModel: KataViewModel by viewModels()
     private val quizViewModel: QuizViewModel by viewModels()
+    private val philosophyViewModel: PhilosophyViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -57,15 +59,32 @@ class MainActivity : ComponentActivity() {
                         }
                         NavHost(
                             navController = navController,
-                            startDestination = Routes.HOME.route
+                            startDestination = Routes.NIJU_KUN_RANDOM.route
                         ) {
+                            composable(
+                                Routes.NIJU_KUN_RANDOM.route,
+                                enterTransition = {
+                                    scaleIntoContainer()
+                                },
+                                exitTransition = {
+                                    scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS)
+                                },
+                                popEnterTransition = {
+                                    scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS)
+                                },
+                                popExitTransition = {
+                                    scaleOutOfContainer()
+                                }
+                            ) {
+                                NijuKun(viewModel = philosophyViewModel, navController)
+                            }
                             composable(Routes.HOME.route) { KataList(kataViewModel, navController) }
                             composable(
                                 Routes.DETAILS.route,
                                 arguments = listOf(navArgument("kataId") { type = NavType.IntType })
                             ) {
                                 val kataInfo =
-                                    KataInfo.findById(it.arguments?.getInt("kataId") ?: 1)!!
+                                    KataInfo.findById(it.arguments?.getInt("kataId") ?: 1)
                                 KataView(kataViewModel, kataInfo) {
                                     navController.popBackStack()
                                 }
@@ -80,6 +99,7 @@ class MainActivity : ComponentActivity() {
                                     val quizId = it.arguments?.getInt("quizId") ?: 0
                                     WordQuiz(viewModel = quizViewModel, navController, quizId)
                                 }
+
                         }
                     }
                 }

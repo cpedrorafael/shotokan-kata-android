@@ -4,5 +4,6 @@ enum class Routes (val route: String){
     HOME("home"),
     DETAILS("details/{kataId}"),
     QUIZZES("quizzes"),
-    WORD_QUIZ("word_quiz")
+    WORD_QUIZ("word_quiz"),
+    NIJU_KUN_RANDOM("nijukunrandom")
 }
