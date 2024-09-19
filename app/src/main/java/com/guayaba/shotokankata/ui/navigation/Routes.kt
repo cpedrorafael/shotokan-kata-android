@@ -1,4 +1,4 @@
-package com.guayaba.shotokankata.ui
+package com.guayaba.shotokankata.ui.navigation
 
 enum class Routes (val route: String){
     HOME("home"),

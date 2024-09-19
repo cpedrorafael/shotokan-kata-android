@@ -1,6 +1,6 @@
 package com.guayaba.shotokankata.data.quizzes
 
-import com.guayaba.shotokankata.ui.Routes
+import com.guayaba.shotokankata.ui.navigation.Routes
 
 class Quizzes {
     companion object {

@@ -5,12 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +27,10 @@ import com.guayaba.shotokankata.data.KataInfo
 import com.guayaba.shotokankata.ui.kata.KataList
 import com.guayaba.shotokankata.ui.kata.KataView
 import com.guayaba.shotokankata.ui.kata.KataViewModel
+import com.guayaba.shotokankata.ui.navigation.Routes
+import com.guayaba.shotokankata.ui.navigation.ScaleTransitionDirection
+import com.guayaba.shotokankata.ui.navigation.scaleIntoContainer
+import com.guayaba.shotokankata.ui.navigation.scaleOutOfContainer
 import com.guayaba.shotokankata.ui.philosophy.NijuKun
 import com.guayaba.shotokankata.ui.philosophy.PhilosophyViewModel
 import com.guayaba.shotokankata.ui.quiz.QuizList

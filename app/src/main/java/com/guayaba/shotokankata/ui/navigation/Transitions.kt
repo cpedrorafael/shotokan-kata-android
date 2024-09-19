@@ -1,4 +1,4 @@
-package com.guayaba.shotokankata.ui
+package com.guayaba.shotokankata.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
