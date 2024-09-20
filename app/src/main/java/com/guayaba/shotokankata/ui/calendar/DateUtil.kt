@@ -9,12 +9,21 @@ import java.util.Locale
 object DateUtil {
     val daysOfWeek: Array<String>
         get() {
+            val days = listOf(
+                DayOfWeek.SUNDAY,
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+                DayOfWeek.SATURDAY
+            )
+
             val daysOfWeek = Array(7) { "" }
 
-            for (dayOfWeek in DayOfWeek.entries) {
-                val localizedDayName =
-                    dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                daysOfWeek[dayOfWeek.value - 1] = localizedDayName
+            for ((index, dayOfWeek) in days.withIndex()) {
+                val localizedDayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                daysOfWeek[index] = localizedDayName
             }
 
             return daysOfWeek

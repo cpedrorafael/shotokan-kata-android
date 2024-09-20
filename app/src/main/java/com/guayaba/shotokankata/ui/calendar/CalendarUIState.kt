@@ -13,11 +13,12 @@ data class CalendarUiState(
         )
     }
     data class Date(
-        val dayOfMonth: String,
-        val isSelected: Boolean
+        val dayOfMonth: String = "",
+        val isSelected: Boolean = false,
+        val trained: Boolean = false
     ) {
         companion object {
-            val Empty = Date("", false)
+            val Empty = Date()
         }
     }
 }

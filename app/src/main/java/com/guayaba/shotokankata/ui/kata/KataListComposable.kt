@@ -54,39 +54,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.guayaba.shotokankata.R
 import com.guayaba.shotokankata.data.KataInfo
+import com.guayaba.shotokankata.ui.common.AppTopBar
+import com.guayaba.shotokankata.ui.navigation.Routes
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun KataList(viewModel: KataViewModel, navController: NavHostController) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    Card(
-                        modifier = Modifier.size(48.dp),
-                        shape = CircleShape,
-                    ) {
-                        Image(
-                            painterResource(R.drawable.shotokan),
-                            contentDescription = "",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        "Shotokan Karate Katas",
-                        fontSize = TextUnit(25.0F, TextUnitType.Sp),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            })
+            AppTopBar(
+                title = "Shotokan Karate Katas",
+                onBackArrowPressed = { navController.popBackStack() })
         }
     ) { paddingValues ->
         Column(
@@ -139,6 +118,7 @@ fun KataList(viewModel: KataViewModel, navController: NavHostController) {
         }
     }
 }
+
 
 @Composable
 fun KataListItem(info: KataInfo, viewModel: KataViewModel, navController: NavHostController) {

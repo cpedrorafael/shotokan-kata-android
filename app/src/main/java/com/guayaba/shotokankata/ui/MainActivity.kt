@@ -16,32 +16,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.guayaba.shotokankata.core.notifications.NotificationReceiver
 import com.guayaba.shotokankata.core.notifications.NotificationUtils
-import com.guayaba.shotokankata.data.KataInfo
-import com.guayaba.shotokankata.ui.kata.KataList
-import com.guayaba.shotokankata.ui.kata.KataView
+import com.guayaba.shotokankata.ui.calendar.SessionViewModel
 import com.guayaba.shotokankata.ui.kata.KataViewModel
-import com.guayaba.shotokankata.ui.navigation.Routes
-import com.guayaba.shotokankata.ui.navigation.ScaleTransitionDirection
-import com.guayaba.shotokankata.ui.navigation.scaleIntoContainer
-import com.guayaba.shotokankata.ui.navigation.scaleOutOfContainer
-import com.guayaba.shotokankata.ui.philosophy.NijuKun
+import com.guayaba.shotokankata.ui.navigation.AppNavigation
 import com.guayaba.shotokankata.ui.philosophy.PhilosophyViewModel
-import com.guayaba.shotokankata.ui.quiz.QuizList
 import com.guayaba.shotokankata.ui.quiz.QuizViewModel
-import com.guayaba.shotokankata.ui.quiz.WordQuiz
 import com.guayaba.shotokankata.ui.theme.ShotokanKataTheme
 
 class MainActivity : ComponentActivity() {
     private val kataViewModel: KataViewModel by viewModels()
     private val quizViewModel: QuizViewModel by viewModels()
     private val philosophyViewModel: PhilosophyViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
+
                     Box(
                         Modifier.padding(8.dp)
                     ) {
@@ -59,50 +48,12 @@ class MainActivity : ComponentActivity() {
                             NotificationUtils.createNotificationChannel(this@MainActivity)
                             setDailyNotification()
                         }
-                        NavHost(
-                            navController = navController,
-                            startDestination = Routes.NIJU_KUN_RANDOM.route
-                        ) {
-                            composable(
-                                Routes.NIJU_KUN_RANDOM.route,
-                                enterTransition = {
-                                    scaleIntoContainer()
-                                },
-                                exitTransition = {
-                                    scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS)
-                                },
-                                popEnterTransition = {
-                                    scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS)
-                                },
-                                popExitTransition = {
-                                    scaleOutOfContainer()
-                                }
-                            ) {
-                                NijuKun(viewModel = philosophyViewModel, navController)
-                            }
-                            composable(Routes.HOME.route) { KataList(kataViewModel, navController) }
-                            composable(
-                                Routes.DETAILS.route,
-                                arguments = listOf(navArgument("kataId") { type = NavType.IntType })
-                            ) {
-                                val kataInfo =
-                                    KataInfo.findById(it.arguments?.getInt("kataId") ?: 1)
-                                KataView(kataViewModel, kataInfo) {
-                                    navController.popBackStack()
-                                }
-                            }
-                            composable(Routes.QUIZZES.route) {
-                                QuizList(navController)
-                            }
-                            composable(
-                                Routes.WORD_QUIZ.route + "/{quizId}",
-                                arguments = listOf(navArgument("quizId") { type = NavType.IntType })
-                                ) {
-                                    val quizId = it.arguments?.getInt("quizId") ?: 0
-                                    WordQuiz(viewModel = quizViewModel, navController, quizId)
-                                }
-
-                        }
+                        AppNavigation(
+                            philosophyViewModel,
+                            kataViewModel,
+                            quizViewModel,
+                            sessionViewModel
+                        )
                     }
                 }
             }

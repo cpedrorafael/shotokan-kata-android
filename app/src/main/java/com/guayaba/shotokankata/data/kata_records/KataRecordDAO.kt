@@ -17,9 +17,15 @@ interface KataRecordDAO {
     @Query("SELECT kataId, COUNT(kataId) as count FROM kata_records WHERE kataId = :kataId GROUP BY kataId")
     suspend fun getCountByKataId(kataId: Int): KataCount
 
-
     @Query("SELECT * FROM kata_records WHERE kataId = :kataId ORDER BY dateTime DESC LIMIT 1")
     suspend fun getLatestRecordForKata(kataId: Int): KataRecord?
+
+    @Query("""
+        SELECT * FROM kata_records 
+        WHERE dateTime BETWEEN :startDate AND :endDate 
+        ORDER BY dateTime DESC
+    """)
+    suspend fun getRecordsInYearMonth(startDate: Long, endDate: Long): List<KataRecord>
 
     @Query("SELECT * FROM kata_records ORDER BY dateTime DESC")
     suspend fun getAllSortedByDateDesc(): List<KataRecord>

@@ -36,16 +36,16 @@ import com.guayaba.shotokankata.ui.navigation.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun NijuKun(viewModel: PhilosophyViewModel, navController: NavHostController) {
+fun NijuKun(viewModel: PhilosophyViewModel, navController: NavHostController, nextRoute: Routes) {
     val principle = remember {
         viewModel.getNijuKun()
     }
 
-    val timerDuration = 3000L
+    val timerDuration = 2000L
 
     LaunchedEffect(Unit) {
         delay(timerDuration)
-        navController.navigate(Routes.HOME.route)
+        navController.navigate(nextRoute.route)
     }
 
     val configuration = LocalConfiguration.current
@@ -54,7 +54,6 @@ fun NijuKun(viewModel: PhilosophyViewModel, navController: NavHostController) {
     // Create an infinite transition
     val infiniteTransition = rememberInfiniteTransition(label = "")
 
-    // Animate the scale factor between 0.8 and 1.2
     val scale by infiniteTransition.animateFloat(
         initialValue = 0.98f,
         targetValue = 1f,

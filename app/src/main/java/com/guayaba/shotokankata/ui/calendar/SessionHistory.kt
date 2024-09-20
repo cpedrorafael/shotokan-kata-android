@@ -2,62 +2,101 @@ package com.guayaba.shotokankata.ui.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.guayaba.shotokankata.R
+import com.guayaba.shotokankata.ui.common.AppTopBar
 import java.time.YearMonth
-import java.time.format.TextStyle
-import java.util.Locale
 
 
 @Composable
-fun Calendar(
-    days: Array<String>,
-    yearMonth: YearMonth,
-    dates: List<CalendarUiState.Date>,
-    onPreviousMonthButtonClicked: (YearMonth) -> Unit,
-    onNextMonthButtonClicked: (YearMonth) -> Unit,
-    onDateClickListener: (CalendarUiState.Date) -> Unit,
+fun SessionCalendar(
+    viewModel: SessionViewModel,
+    onAddPracticeSession: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Row {
-            repeat(days.size) {
-                val item = days[it]
-                DayItem(item, modifier = Modifier.weight(1f))
+    val uiState by viewModel.uiState.collectAsState()
+    val days = DateUtil.daysOfWeek
+
+    Scaffold(
+        topBar = {
+            AppTopBar(title = "Training Sessions")
+        },
+        floatingActionButton = {
+            Button(onClick = {
+                onAddPracticeSession()
+            }) {
+               Text(text = "Add")
             }
         }
-        Header(
-            yearMonth = yearMonth,
-            onPreviousMonthButtonClicked = onPreviousMonthButtonClicked,
-            onNextMonthButtonClicked = onNextMonthButtonClicked
-        )
-        Content(
-            dates = dates,
-            onDateClickListener = onDateClickListener
-        )
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(padding)
+        ) {
+            Card(
+                shape = CardDefaults.outlinedShape,
+                modifier = Modifier.wrapContentHeight().padding(0.dp, 32.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp),
+                ) {
+                    Row {
+                        repeat(days.size) {
+                            val item = days[it]
+                            DayItem(item, modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Header(
+                        yearMonth = uiState.yearMonth,
+                        onPreviousMonthButtonClicked = {
+                            viewModel.toPreviousMonth(it)
+                        },
+                        onNextMonthButtonClicked = {
+                            viewModel.toNextMonth(it)
+                        }
+                    )
+                    Content(
+                        dates = uiState.dates,
+                        onDateClickListener = {}
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -152,12 +191,22 @@ fun ContentItem(
                 onClickListener(date)
             }
     ) {
+        if (date.trained) {
+            Icon(
+                painter = painterResource(id = R.drawable.mushin),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(48.dp)
+                    .align(Alignment.Center),
+                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            )
+        }
         Text(
             text = date.dayOfMonth,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(10.dp)
+                .padding(16.dp)
         )
     }
 }

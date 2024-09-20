@@ -5,5 +5,6 @@ enum class Routes (val route: String){
     DETAILS("details/{kataId}"),
     QUIZZES("quizzes"),
     WORD_QUIZ("word_quiz"),
-    NIJU_KUN_RANDOM("nijukunrandom")
+    NIJU_KUN_RANDOM("nijukunrandom"),
+    SESSION_CALENDAR("calendar")
 }

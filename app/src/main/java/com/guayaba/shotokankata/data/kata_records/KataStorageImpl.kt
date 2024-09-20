@@ -9,6 +9,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.YearMonth
+import java.time.ZoneId
 
 class KataStorageImpl : KataStorage {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -48,6 +51,23 @@ class KataStorageImpl : KataStorage {
         val deferred = ioScope.async {
             database.kataRecordDAO().getAllSortedByDateDesc()
         }
+        return deferred.await()
+    }
+
+    override suspend fun getSessionsInMonth(yearMonth: YearMonth): List<KataRecord> {
+        // Start of the month
+        val startDateTime = yearMonth.atDay(1).atStartOfDay(ZoneId.systemDefault())
+        val startDate = startDateTime.toInstant().toEpochMilli()
+
+        // End of the month
+        val endDateTime =
+            yearMonth.atEndOfMonth().atTime(LocalTime.MAX).atZone(ZoneId.systemDefault())
+        val endDate = endDateTime.toInstant().toEpochMilli()
+
+        val deferred = ioScope.async {
+            return@async database.kataRecordDAO().getRecordsInYearMonth(startDate, endDate)
+        }
+
         return deferred.await()
     }
 
