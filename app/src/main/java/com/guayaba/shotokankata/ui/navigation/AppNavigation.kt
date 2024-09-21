@@ -55,6 +55,7 @@ fun AppNavigation(
             val kataInfo =
                 KataInfo.findById(it.arguments?.getInt("kataId") ?: 1)
             KataView(kataViewModel, kataInfo) {
+                sessionViewModel.update()
                 navController.popBackStack()
             }
         }

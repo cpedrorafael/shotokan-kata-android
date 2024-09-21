@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.guayaba.shotokankata.R
 import com.guayaba.shotokankata.ui.common.AppTopBar
+import java.time.LocalDate
 import java.time.YearMonth
 
 
@@ -187,7 +188,10 @@ fun ContentItem(
                     Color.Transparent
                 }
             )
-            .clickable {
+            .clickable(
+                // disable for dates after today
+                enabled = date.localDate.isBefore(LocalDate.now().plusDays(1))
+            ) {
                 onClickListener(date)
             }
     ) {

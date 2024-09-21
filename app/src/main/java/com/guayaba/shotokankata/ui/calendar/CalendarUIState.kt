@@ -1,5 +1,6 @@
 package com.guayaba.shotokankata.ui.calendar
 
+import java.time.LocalDate
 import java.time.YearMonth
 
 data class CalendarUiState(
@@ -15,7 +16,8 @@ data class CalendarUiState(
     data class Date(
         val dayOfMonth: String = "",
         val isSelected: Boolean = false,
-        val trained: Boolean = false
+        val trained: Boolean = false,
+        val localDate: LocalDate = LocalDate.now()
     ) {
         companion object {
             val Empty = Date()

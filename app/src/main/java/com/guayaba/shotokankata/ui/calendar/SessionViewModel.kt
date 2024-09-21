@@ -20,18 +20,20 @@ class SessionViewModel : ViewModel() {
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    dates = getDates(currentState.yearMonth)
-                )
-            }
+       update()
+    }
+
+    fun update() = viewModelScope.launch {
+        _uiState.update { currentState ->
+            currentState.copy(
+                dates = getDates(currentState.yearMonth)
+            )
         }
     }
 
     private fun getSessions(yearMonth: YearMonth) =
         viewModelScope.launch {
-            val sessions = kataStorage.getAllSessions().filter {
+            kataStorage.getAllSessions().filter {
                 it.dateTime.year == yearMonth.year && it.dateTime.month == yearMonth.month
             }.map {
                 CalendarUiState.Date(it.dateTime.toString(), false)
@@ -84,7 +86,8 @@ class SessionViewModel : ViewModel() {
                         "" // Fill with empty string for days outside the current month
                     },
                     isSelected = date.isEqual(LocalDate.now()) && date.monthValue == yearMonth.monthValue,
-                   date in datesFromRecords
+                    localDate = date,
+                    trained = date in datesFromRecords
                 )
             }
     }
