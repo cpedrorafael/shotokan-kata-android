@@ -8,6 +8,7 @@ import com.guayaba.shotokankata.utils.AsyncUtil.Companion.ioScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
@@ -45,6 +46,10 @@ class KataStorageImpl : KataStorage {
             return@async database.kataRecordDAO().getCountByKataId(kataId) ?: KataCount(kataId, 0)
         }
         return deferred.await()
+    }
+
+    override suspend fun getAllSessionsInDate(date: LocalDate): List<KataRecord> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getAllSessions(): List<KataRecord> {

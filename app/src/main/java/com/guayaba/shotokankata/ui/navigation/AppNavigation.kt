@@ -7,7 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.guayaba.shotokankata.data.KataInfo
-import com.guayaba.shotokankata.ui.calendar.SessionCalendar
+import com.guayaba.shotokankata.ui.calendar.SessionCalendarPage
+import com.guayaba.shotokankata.ui.calendar.SessionDayView
 import com.guayaba.shotokankata.ui.calendar.SessionViewModel
 import com.guayaba.shotokankata.ui.kata.KataList
 import com.guayaba.shotokankata.ui.kata.KataView
@@ -69,11 +70,30 @@ fun AppNavigation(
             val quizId = it.arguments?.getInt("quizId") ?: 0
             WordQuiz(viewModel = quizViewModel, navController, quizId)
         }
-        composable(Routes.SESSION_CALENDAR.route) { 
-            SessionCalendar(sessionViewModel){
-                navController.navigate(Routes.HOME.route)
+        composable(Routes.SESSION_CALENDAR.route)
+        {
+            SessionCalendarPage(
+                sessionViewModel,
+                onAddPracticeSession = {
+                    navController.navigate(Routes.HOME.route)
+                }, onDayClicked = {
+                    navController.navigate(Routes.SESSION_DAY.route + "/$it")
+                })
+        }
+        composable(
+            Routes.SESSION_DAY.route + "/{date}",
+            arguments = listOf(navArgument("date") { type = NavType.LongType })
+        ) {
+            it.arguments?.let { bundle ->
+                val arg = bundle.getLong("date")
+                SessionDayView(
+                    sessionViewModel,
+                    dateLong = arg,
+                    onBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
-
     }
 }

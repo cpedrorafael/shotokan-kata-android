@@ -3,30 +3,32 @@ package com.guayaba.shotokankata.ui.calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,28 +40,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.guayaba.shotokankata.R
 import com.guayaba.shotokankata.ui.common.AppTopBar
+import com.guayaba.shotokankata.utils.toLong
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneOffset
 
 
 @Composable
-fun SessionCalendar(
+fun SessionCalendarPage(
     viewModel: SessionViewModel,
-    onAddPracticeSession: () -> Unit
+    onAddPracticeSession: () -> Unit,
+    onDayClicked: (Long) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val days = DateUtil.daysOfWeek
-
     Scaffold(
         topBar = {
             AppTopBar(title = "Training Sessions")
         },
         floatingActionButton = {
-            Button(onClick = {
-                onAddPracticeSession()
-            }) {
-               Text(text = "Add")
-            }
+
         }
     ) { padding ->
         Column(
@@ -68,35 +66,82 @@ fun SessionCalendar(
                 .verticalScroll(rememberScrollState())
                 .padding(padding)
         ) {
-            Card(
-                shape = CardDefaults.outlinedShape,
-                modifier = Modifier.wrapContentHeight().padding(0.dp, 32.dp),
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = "Click on any day to edit",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Calendar(viewModel, onDayClicked = {
+                onDayClicked(
+                    it.localDate.toLong()
+                )
+            })
+            Spacer(modifier = Modifier.height(32.dp))
+            OutlinedIconButton(
+                onClick = {
+                    onAddPracticeSession()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp),
-                ) {
-                    Row {
-                        repeat(days.size) {
-                            val item = days[it]
-                            DayItem(item, modifier = Modifier.weight(1f))
-                        }
-                    }
-                    Header(
-                        yearMonth = uiState.yearMonth,
-                        onPreviousMonthButtonClicked = {
-                            viewModel.toPreviousMonth(it)
-                        },
-                        onNextMonthButtonClicked = {
-                            viewModel.toNextMonth(it)
-                        }
+                Row {
+                    Text(
+                        text = "Record new session",
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
-                    Content(
-                        dates = uiState.dates,
-                        onDateClickListener = {}
+                    Spacer(Modifier.width(8.dp))
+                    Icon(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        painter = painterResource(id = R.drawable.mushin_tiger),
+                        tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                        contentDescription = "Mushin",
                     )
                 }
+
             }
+        }
+    }
+}
+
+@Composable
+private fun Calendar(
+    viewModel: SessionViewModel,
+    onDayClicked: (CalendarUiState.Date) -> Unit
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val days = DateUtil.daysOfWeek
+    Card(
+        shape = CardDefaults.outlinedShape,
+        modifier = Modifier
+            .wrapContentHeight()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp),
+        ) {
+            Row {
+                repeat(days.size) {
+                    val item = days[it]
+                    DayItem(item, modifier = Modifier.weight(1f))
+                }
+            }
+            Header(
+                yearMonth = uiState.yearMonth,
+                onPreviousMonthButtonClicked = {
+                    viewModel.toPreviousMonth(it)
+                },
+                onNextMonthButtonClicked = {
+                    viewModel.toNextMonth(it)
+                }
+            )
+            Content(
+                dates = uiState.dates,
+                onDateClicked = onDayClicked
+            )
+
         }
     }
 }
@@ -152,7 +197,7 @@ fun DayItem(day: String, modifier: Modifier = Modifier) {
 @Composable
 fun Content(
     dates: List<CalendarUiState.Date>,
-    onDateClickListener: (CalendarUiState.Date) -> Unit,
+    onDateClicked: (CalendarUiState.Date) -> Unit,
 ) {
     Column {
         var index = 0
@@ -163,7 +208,7 @@ fun Content(
                     val item = if (index < dates.size) dates[index] else CalendarUiState.Date.Empty
                     ContentItem(
                         date = item,
-                        onClickListener = onDateClickListener,
+                        onClick = onDateClicked,
                         modifier = Modifier.weight(1f)
                     )
                     index++
@@ -176,7 +221,7 @@ fun Content(
 @Composable
 fun ContentItem(
     date: CalendarUiState.Date,
-    onClickListener: (CalendarUiState.Date) -> Unit,
+    onClick: (CalendarUiState.Date) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -186,13 +231,18 @@ fun ContentItem(
                     MaterialTheme.colorScheme.secondaryContainer
                 } else {
                     Color.Transparent
-                }
+                },
+                shape = RoundedCornerShape(10.dp)
             )
             .clickable(
                 // disable for dates after today
-                enabled = date.localDate.isBefore(LocalDate.now().plusDays(1))
+                enabled = date.localDate.isBefore(
+                    LocalDate
+                        .now()
+                        .plusDays(1)
+                )
             ) {
-                onClickListener(date)
+                onClick(date)
             }
     ) {
         if (date.trained) {
