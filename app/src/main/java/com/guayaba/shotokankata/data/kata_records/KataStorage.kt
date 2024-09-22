@@ -5,7 +5,8 @@ import java.time.YearMonth
 
 interface KataStorage {
     suspend fun addOneSession(kataId: Int): Boolean
-    fun decreaseOneSession(kataId: Int)
+    suspend fun saveRecord(record: KataRecord)
+    fun deleteRecord(record: KataRecord)
     suspend fun getAllSessionsForKata(kataId: Int): KataCount
     suspend fun getAllSessionsInDate(date: LocalDate): List<KataRecord>
     suspend fun getAllSessions(): List<KataRecord>

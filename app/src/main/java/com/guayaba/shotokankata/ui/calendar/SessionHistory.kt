@@ -22,7 +22,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,10 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.guayaba.shotokankata.R
 import com.guayaba.shotokankata.ui.common.AppTopBar
-import com.guayaba.shotokankata.utils.toLong
+import com.guayaba.shotokankata.utils.toEpochMilli
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.ZoneOffset
 
 
 @Composable
@@ -76,7 +74,7 @@ fun SessionCalendarPage(
             Spacer(modifier = Modifier.height(16.dp))
             Calendar(viewModel, onDayClicked = {
                 onDayClicked(
-                    it.localDate.toLong()
+                    it.localDate.toEpochMilli()
                 )
             })
             Spacer(modifier = Modifier.height(32.dp))

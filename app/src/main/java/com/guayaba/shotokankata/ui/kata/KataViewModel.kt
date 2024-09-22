@@ -19,7 +19,4 @@ class KataViewModel : ViewModel() {
 
     suspend fun getAllKataRecords() = kataStorage.getAllSessions()
 
-    fun decreaseOneSession(kataInfo: KataInfo) =
-        kataStorage.decreaseOneSession(kataInfo.id)
-
 }

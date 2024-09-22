@@ -1,5 +1,6 @@
 package com.guayaba.shotokankata.ui.calendar
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guayaba.shotokankata.data.kata_records.KataRecord
@@ -15,12 +16,18 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 
+const val TAG = "SessionViewModel"
 class SessionViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CalendarUiState.init)
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
 
+    private val _sessionDay = MutableStateFlow(listOf<KataRecord>())
+    val sessionDay: StateFlow<List<KataRecord>> = _sessionDay
+
+    private var deletedRecord: KataRecord? = null
+
     init {
-       update()
+        update()
     }
 
     fun update() = viewModelScope.launch {
@@ -90,6 +97,28 @@ class SessionViewModel : ViewModel() {
                     trained = date in datesFromRecords
                 )
             }
+    }
+
+    fun deleteKataRecord(record: KataRecord) = viewModelScope.launch {
+        deletedRecord = record
+        kataStorage.deleteRecord(record)
+        val newList = _sessionDay.value.filter { it != record }
+        _sessionDay.emit(newList)
+    }
+
+    fun undoDeleteLastRecord()= viewModelScope.launch{
+        deletedRecord?.let {
+            kataStorage.saveRecord(it)
+            val list = mutableListOf<KataRecord>()
+            list.addAll(_sessionDay.value)
+            list.add(it)
+            _sessionDay.emit(list)
+        }
+    }
+
+    fun getSessionsForDay(date: LocalDate) = viewModelScope.launch {
+        val records = kataStorage.getAllSessionsInDate(date)
+        _sessionDay.value = records.toMutableList()
     }
 
 }

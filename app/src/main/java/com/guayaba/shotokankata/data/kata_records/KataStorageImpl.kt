@@ -5,7 +5,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.guayaba.shotokankata.ui.KataApplication.Companion.database
 import com.guayaba.shotokankata.utils.AsyncUtil.Companion.ioScope
+import com.guayaba.shotokankata.utils.toEpochMilli
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.time.LocalDate
@@ -36,10 +38,16 @@ class KataStorageImpl : KataStorage {
         }
     }
 
-
-    override fun decreaseOneSession(kataId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun saveRecord(record: KataRecord) {
+        database.kataRecordDAO().insert(record)
     }
+
+    override fun deleteRecord(record: KataRecord) {
+        ioScope.launch {
+            database.kataRecordDAO().delete(record)
+        }
+    }
+
 
     override suspend fun getAllSessionsForKata(kataId: Int): KataCount {
         val deferred = ioScope.async {
@@ -49,7 +57,13 @@ class KataStorageImpl : KataStorage {
     }
 
     override suspend fun getAllSessionsInDate(date: LocalDate): List<KataRecord> {
-        TODO("Not yet implemented")
+        val startDateTime = date.atStartOfDay().toEpochMilli()
+        val endDateTime = date.plusDays(1).atStartOfDay().toEpochMilli()
+        val deferred = ioScope.async {
+            database.kataRecordDAO().getRecordsInYearMonth(startDateTime, endDateTime)
+        }
+
+        return deferred.await()
     }
 
     override suspend fun getAllSessions(): List<KataRecord> {
