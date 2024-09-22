@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +23,7 @@ import com.guayaba.shotokankata.core.notifications.NotificationUtils
 import com.guayaba.shotokankata.ui.calendar.SessionViewModel
 import com.guayaba.shotokankata.ui.kata.KataViewModel
 import com.guayaba.shotokankata.ui.navigation.AppNavigation
+import com.guayaba.shotokankata.ui.navigation.BottomNavigationBar
 import com.guayaba.shotokankata.ui.philosophy.PhilosophyViewModel
 import com.guayaba.shotokankata.ui.quiz.QuizViewModel
 import com.guayaba.shotokankata.ui.theme.ShotokanKataTheme
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val navController = rememberNavController()
 
                     Box(
                         Modifier.padding(8.dp)
@@ -49,11 +52,16 @@ class MainActivity : ComponentActivity() {
                             setDailyNotification()
                         }
                         AppNavigation(
+                            navController,
                             philosophyViewModel,
                             kataViewModel,
                             quizViewModel,
                             sessionViewModel
                         )
+                        
+                        BottomNavigationBar(navController = navController, modifier = Modifier.align(
+                            Alignment.BottomCenter))
+
                     }
                 }
             }

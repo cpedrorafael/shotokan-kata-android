@@ -1,6 +1,8 @@
 package com.guayaba.shotokankata.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,12 +23,12 @@ import com.guayaba.shotokankata.ui.quiz.WordQuiz
 
 @Composable
 fun AppNavigation(
+    navController: NavHostController,
     philosophyViewModel: PhilosophyViewModel,
     kataViewModel: KataViewModel,
     quizViewModel: QuizViewModel,
     sessionViewModel: SessionViewModel
 ) {
-    val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = Routes.NIJU_KUN_RANDOM.route
