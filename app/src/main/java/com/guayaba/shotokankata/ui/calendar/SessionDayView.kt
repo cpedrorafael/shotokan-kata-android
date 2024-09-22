@@ -119,16 +119,19 @@ fun SessionDayView(
                             viewModel.deleteKataRecord(record)
                             val kata = KataInfo.findById(record.kataId)
                             scope.launch {
+                                snackbarHostState.currentSnackbarData?.dismiss()
                                 val result = snackbarHostState
                                     .showSnackbar(
                                         message = "Deleted ${kata.kataName}",
                                         actionLabel = "Undo",
-                                        duration = SnackbarDuration.Long
+                                        duration = SnackbarDuration.Long,
+                                        withDismissAction = true
                                     )
                                 when (result) {
                                     SnackbarResult.ActionPerformed -> {
-                                       viewModel.undoDeleteLastRecord()
+                                        viewModel.undoDeleteLastRecord()
                                     }
+
                                     SnackbarResult.Dismissed -> {
                                         /* Handle snackbar dismissed */
                                     }
@@ -143,14 +146,14 @@ fun SessionDayView(
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onClick = { }) {
-                Text(text = if(records.value.isEmpty()) "Log sessions for this day" else "Log more Katas for this day")
+                Text(text = if (records.value.isEmpty()) "Log sessions for this day" else "Log more Katas for this day")
             }
         }
     }
 }
 
 @Composable
-fun SessionKataItem(record: KataRecord, onDelete: ()-> Unit) {
+fun SessionKataItem(record: KataRecord, onDelete: () -> Unit) {
     val kata = KataInfo.findById(record.kataId)
     Box(
         Modifier.fillMaxWidth()

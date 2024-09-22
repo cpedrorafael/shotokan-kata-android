@@ -60,12 +60,16 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun KataList(viewModel: KataViewModel, navController: NavHostController) {
+fun KataList(
+    viewModel: KataViewModel,
+    onNavigationPopBackstack: () -> Unit,
+    onNavigateToDetails: (Int) -> Unit
+) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = "Shotokan Karate Katas",
-                onBackArrowPressed = { navController.popBackStack() })
+                onBackArrowPressed = { onNavigationPopBackstack() })
         }
     ) { paddingValues ->
         Column(
@@ -75,35 +79,35 @@ fun KataList(viewModel: KataViewModel, navController: NavHostController) {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Box {
+//            Box {
+//
+//                Button(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    onClick = {
+//                        navController.navigate("quizzes")
+//                    },
+//                ) {
+//                    Text("Test your knowledge with a quiz")
+//                }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {
-                        navController.navigate("quizzes")
-                    },
-                ) {
-                    Text("Test your knowledge with a quiz")
-                }
+//                Icon(
+//                    painter = painterResource(id = R.drawable.brain),
+//                    contentDescription = "Brain",
+//                    Modifier
+//                        .size(48.dp)
+//                        .align(BiasAlignment(0.9f, -0.1f)),
+//                    tint = Color.Unspecified
+//                )
+//            }
 
-                Icon(
-                    painter = painterResource(id = R.drawable.brain),
-                    contentDescription = "Brain",
-                    Modifier
-                        .size(48.dp)
-                        .align(BiasAlignment(0.9f, -0.1f)),
-                    tint = Color.Unspecified
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                "Or record your Kata practice",
-                style = TextStyle(textAlign = TextAlign.Center),
-                modifier = Modifier.fillMaxWidth()
-            )
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            Text(
+//                "Or record your Kata practice",
+//                style = TextStyle(textAlign = TextAlign.Center),
+//                modifier = Modifier.fillMaxWidth()
+//            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -111,7 +115,7 @@ fun KataList(viewModel: KataViewModel, navController: NavHostController) {
                 KataListItem(
                     info = KataInfo.findById(it.id),
                     viewModel = viewModel,
-                    navController
+                    onNavigateToDetails= onNavigateToDetails
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -121,7 +125,7 @@ fun KataList(viewModel: KataViewModel, navController: NavHostController) {
 
 
 @Composable
-fun KataListItem(info: KataInfo, viewModel: KataViewModel, navController: NavHostController) {
+fun KataListItem(info: KataInfo, viewModel: KataViewModel, onNavigateToDetails: (Int) -> Unit) {
     var sessionCount by remember {
         mutableIntStateOf(0)
     }
@@ -133,7 +137,7 @@ fun KataListItem(info: KataInfo, viewModel: KataViewModel, navController: NavHos
 
     OutlinedButton(
         onClick = {
-            navController.navigate("details/${info.id}")
+            onNavigateToDetails(info.id)
         }) {
         Row(
             Modifier

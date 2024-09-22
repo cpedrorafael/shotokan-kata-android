@@ -48,7 +48,16 @@ fun AppNavigation(
         ) {
             NijuKun(viewModel = philosophyViewModel, navController, Routes.SESSION_CALENDAR)
         }
-        composable(Routes.HOME.route) { KataList(kataViewModel, navController) }
+
+        composable(Routes.HOME.route) {
+            KataList(kataViewModel, onNavigationPopBackstack = {
+                navController.popBackStack()
+                sessionViewModel.update()
+            }, onNavigateToDetails = { kataId ->
+                navController.navigate("details/$kataId")
+            })
+        }
+
         composable(
             Routes.DETAILS.route,
             arguments = listOf(navArgument("kataId") { type = NavType.IntType })
@@ -56,8 +65,8 @@ fun AppNavigation(
             val kataInfo =
                 KataInfo.findById(it.arguments?.getInt("kataId") ?: 1)
             KataView(kataViewModel, kataInfo) {
-                sessionViewModel.update()
                 navController.popBackStack()
+                sessionViewModel.update()
             }
         }
         composable(Routes.QUIZZES.route) {
@@ -91,6 +100,7 @@ fun AppNavigation(
                     dateLong = arg,
                     onBackPressed = {
                         navController.popBackStack()
+                        sessionViewModel.update()
                     }
                 )
             }
