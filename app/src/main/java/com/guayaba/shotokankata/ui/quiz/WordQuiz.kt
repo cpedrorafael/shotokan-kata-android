@@ -62,7 +62,11 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Text("Quizzes", fontSize = TextUnit(30.0F, TextUnitType.Sp), textAlign = TextAlign.Left)
+                Text(
+                    "Quizzes",
+                    fontSize = TextUnit(30.0F, TextUnitType.Sp),
+                    textAlign = TextAlign.Left
+                )
             }, navigationIcon = {
                 IconButton(onClick = {
                     navHostController.popBackStack()
@@ -185,8 +189,11 @@ fun QuestionView(question: QuizQuestion, viewModel: QuizViewModel, onAnswer: (St
 
 @Composable
 fun TextAnswerButton(answer: String, onAnswer: (String) -> Unit) {
-    OutlinedButton(onClick = { onAnswer(answer) }, modifier = Modifier.padding(horizontal = 4.dp)) {
-        Text(text = answer)
+    OutlinedButton(
+        onClick = { onAnswer(answer) },
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).height(64.dp)
+    ) {
+        Text(text = answer, fontSize = 25.sp)
     }
 }
 

@@ -77,7 +77,6 @@ class QuizViewModel : ViewModel() {
     }
 
     fun answerQuestion(answer: String) {
-
         if(_questionFlow.value.isFinished) {
             return
         }
@@ -86,7 +85,7 @@ class QuizViewModel : ViewModel() {
             score++
         }else{
             try{
-                val currentQuestion = questions.element()
+                val currentQuestion = questions.peek()!!
                 wrongAnswers.add(currentQuestion.question)
             }catch (_: Exception){}
         }
