@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import com.guayaba.shotokankata.data.KataInfo
 import com.guayaba.shotokankata.ui.calendar.SessionCalendarPage
 import com.guayaba.shotokankata.ui.calendar.SessionDayView
+import com.guayaba.shotokankata.ui.calendar.SessionKataDaySelector
 import com.guayaba.shotokankata.ui.calendar.SessionViewModel
 import com.guayaba.shotokankata.ui.kata.KataList
 import com.guayaba.shotokankata.ui.kata.KataView
@@ -106,8 +107,25 @@ fun AppNavigation(
                     onBackPressed = {
                         navController.popBackStack()
                         sessionViewModel.update()
+                    },
+                    onLogSessions = {
+                        navController.navigate(Routes.LOG_SESSIONS.route + "/$arg")
                     }
                 )
+            }
+        }
+        composable(
+            Routes.LOG_SESSIONS.route + "/{date}",
+            arguments = listOf(navArgument("date") { type = NavType.LongType })
+        ) {
+            it.arguments?.let { bundle ->
+                val arg = bundle.getLong("date")
+                SessionKataDaySelector(
+                    dateLong = arg,
+                    sessionViewModel,
+                ){
+                    navController.popBackStack()
+                }
             }
         }
     }

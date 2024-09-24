@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import java.time.LocalDateTime
 
 @Dao
 interface KataRecordDAO {
@@ -33,6 +34,13 @@ interface KataRecordDAO {
     @Query("SELECT * FROM kata_records WHERE id IN (:ids)")
     fun loadAllByIds(ids: IntArray): List<KataRecord>
 
+    @Query("SELECT * FROM kata_records WHERE kataId = :kataId AND dateTime BETWEEN :startDate AND" +
+            " :endDate ORDER BY dateTime DESC LIMIT 1")
+    fun getRecordByKataIdAndDate(kataId: Int, startDate: LocalDateTime, endDate: LocalDateTime): KataRecord?
+
     @Delete
     fun delete(kataRecord: KataRecord)
+
+    @Query("DELETE FROM kata_records WHERE kataId = :kataId AND dateTime BETWEEN :startDate AND :endDate ")
+    suspend fun deleteRecordByKataIdAtDate(kataId: Int, startDate: LocalDateTime, endDate: LocalDateTime)
 }

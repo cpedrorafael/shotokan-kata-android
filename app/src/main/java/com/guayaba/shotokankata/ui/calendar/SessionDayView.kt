@@ -61,7 +61,8 @@ import java.time.format.DateTimeFormatter
 fun SessionDayView(
     viewModel: SessionViewModel,
     dateLong: Long,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    onLogSessions: () -> Unit,
 ) {
     val date = dateLong.toLocalDate()
     val formatter = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy")
@@ -94,26 +95,21 @@ fun SessionDayView(
         Box(
             Modifier.fillMaxSize()
         ) {
-            Column(
-                Modifier
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                if (records.value.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            text = "Nothing to see here \uD83E\uDD21...",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.Center),
-                            textAlign = TextAlign.Center
-                        )
-
-                    }
-                } else {
+            if (records.value.isEmpty()) {
+                Text(
+                    text = "Nothing to see here \uD83E\uDD21...",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                Column(
+                    Modifier
+                        .padding(paddingValues)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
                     records.value.forEach { record ->
                         SessionKataItem(record = record, onDelete = {
                             viewModel.deleteKataRecord(record)
@@ -141,11 +137,12 @@ fun SessionDayView(
                     }
                     Spacer(modifier = Modifier.height(100.dp))
                 }
+
             }
 
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                onClick = { }) {
+                onClick = onLogSessions ) {
                 Text(text = if (records.value.isEmpty()) "Log sessions for this day" else "Log more Katas for this day")
             }
         }

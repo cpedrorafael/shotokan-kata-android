@@ -9,6 +9,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -56,12 +59,15 @@ class MainActivity : ComponentActivity() {
                         Routes.SESSION_CALENDAR.route -> {
                             bottomBarState.value = true
                         }
+
                         Routes.HOME.route -> {
                             bottomBarState.value = true
                         }
+
                         Routes.QUIZZES.route -> {
                             bottomBarState.value = true
                         }
+
                         else -> {
                             bottomBarState.value = false
                         }
@@ -70,7 +76,7 @@ class MainActivity : ComponentActivity() {
 
                     Box(
                         Modifier.padding(8.dp)
-                    ){
+                    ) {
                         NotificationPermissionRequest {
                             NotificationUtils.createNotificationChannel(this@MainActivity)
                             setDailyNotification()
@@ -83,9 +89,19 @@ class MainActivity : ComponentActivity() {
                             sessionViewModel
                         )
 
-                        if(bottomBarState.value) {
-                            BottomNavigationBar(navController = navController, modifier = Modifier.align(
-                                Alignment.BottomCenter).height(64.dp)){
+                        AnimatedVisibility(
+                            visible = bottomBarState.value,
+                            enter = slideInVertically(initialOffsetY = { it }),
+                            exit = slideOutVertically(targetOffsetY = { it }),
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        ) {
+                            BottomNavigationBar(
+                                navController = navController, modifier = Modifier
+                                    .align(
+                                        Alignment.BottomCenter
+                                    )
+                                    .height(64.dp)
+                            ) {
                                 sessionViewModel.update()
                             }
                         }

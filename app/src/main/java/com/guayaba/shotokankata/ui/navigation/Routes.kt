@@ -7,5 +7,6 @@ enum class Routes (val route: String){
     WORD_QUIZ("word_quiz"),
     NIJU_KUN_RANDOM("nijukunrandom"),
     SESSION_CALENDAR("calendar"),
-    SESSION_DAY("session")
+    SESSION_DAY("session"),
+    LOG_SESSIONS("log")
 }

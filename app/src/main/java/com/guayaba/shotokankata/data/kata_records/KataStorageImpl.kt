@@ -1,6 +1,5 @@
 package com.guayaba.shotokankata.data.kata_records
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.guayaba.shotokankata.ui.KataApplication.Companion.database
@@ -88,6 +87,31 @@ class KataStorageImpl : KataStorage {
         }
 
         return deferred.await()
+    }
+
+    override suspend fun addRecordByKataIdAtDate(id: Int, date: LocalDate) {
+        val startDateTime = date.atStartOfDay()
+        val endDateTime = date.atTime(23,59)
+        val deferred = ioScope.async {
+            return@async database.kataRecordDAO().getRecordByKataIdAndDate(id, startDateTime, endDateTime)
+        }
+        val record = deferred.await()
+        if(record == null){
+            val newRecord = KataRecord(
+                0, id, date.atStartOfDay()
+            )
+            ioScope.launch {
+                database.kataRecordDAO().insert(newRecord)
+            }
+        }
+    }
+
+    override suspend fun deleteRecordByKataIdAtDate(id: Int, date: LocalDate) {
+        val startDateTime = date.atStartOfDay()
+        val endDateTime = date.atTime(23,59)
+        ioScope.launch {
+            database.kataRecordDAO().deleteRecordByKataIdAtDate(id, startDateTime, endDateTime)
+        }
     }
 
 }

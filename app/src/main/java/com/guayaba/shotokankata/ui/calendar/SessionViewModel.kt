@@ -1,6 +1,5 @@
 package com.guayaba.shotokankata.ui.calendar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guayaba.shotokankata.data.kata_records.KataRecord
@@ -119,6 +118,19 @@ class SessionViewModel : ViewModel() {
     fun getSessionsForDay(date: LocalDate) = viewModelScope.launch {
         val records = kataStorage.getAllSessionsInDate(date)
         _sessionDay.value = records.toMutableList()
+    }
+
+    fun updateKata(id: Int, date: LocalDate, selected: Boolean) {
+        val job = viewModelScope.launch {
+            if (selected) {
+                kataStorage.addRecordByKataIdAtDate(id, date)
+            } else {
+                kataStorage.deleteRecordByKataIdAtDate(id, date)
+            }
+        }
+        job.invokeOnCompletion {
+            update()
+        }
     }
 
 }
