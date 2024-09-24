@@ -57,7 +57,7 @@ class KataStorageImpl : KataStorage {
 
     override suspend fun getAllSessionsInDate(date: LocalDate): List<KataRecord> {
         val startDateTime = date.atStartOfDay().toEpochMilli()
-        val endDateTime = date.plusDays(1).atStartOfDay().toEpochMilli()
+        val endDateTime = date.atTime(23,59).toEpochMilli()
         val deferred = ioScope.async {
             database.kataRecordDAO().getRecordsInYearMonth(startDateTime, endDateTime)
         }

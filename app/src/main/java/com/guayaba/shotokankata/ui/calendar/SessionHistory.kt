@@ -183,7 +183,7 @@ fun DayItem(day: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Text(
             text = day,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.Center)
@@ -255,7 +255,7 @@ fun ContentItem(
         }
         Text(
             text = date.dayOfMonth,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(16.dp)
