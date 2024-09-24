@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.guayaba.shotokankata.data.quizzes.Quizzes
 import com.guayaba.shotokankata.data.quizzes.Quizzes.Companion.mapQuizToRoute
+import com.guayaba.shotokankata.ui.common.AppTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -36,23 +37,7 @@ import com.guayaba.shotokankata.data.quizzes.Quizzes.Companion.mapQuizToRoute
 fun QuizList(navHostController: NavHostController) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Quizzes", fontSize = TextUnit(30.0F, TextUnitType.Sp))
-                }
-            }, navigationIcon = {
-                IconButton(onClick = {
-                    navHostController.popBackStack()
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            })
+          AppTopBar(title = "Quizzes")
         }
     ) { paddingValues ->
         Column(

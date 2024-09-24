@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
@@ -84,8 +85,10 @@ class QuizViewModel : ViewModel() {
         if (answer == questionFlow.value.question!!.answer) {
             score++
         }else{
-            val currentQuestion = questions.element()
-            wrongAnswers.add(currentQuestion.question)
+            try{
+                val currentQuestion = questions.element()
+                wrongAnswers.add(currentQuestion.question)
+            }catch (_: Exception){}
         }
 
         loadNextQuestion()

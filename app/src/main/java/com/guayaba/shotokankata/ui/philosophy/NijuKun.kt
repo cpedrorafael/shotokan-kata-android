@@ -36,7 +36,10 @@ import com.guayaba.shotokankata.ui.navigation.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun NijuKun(viewModel: PhilosophyViewModel, navController: NavHostController, nextRoute: Routes) {
+fun NijuKun(
+    viewModel: PhilosophyViewModel,
+    onSplashFinished: () -> Unit
+) {
     val principle = remember {
         viewModel.getNijuKun()
     }
@@ -45,7 +48,7 @@ fun NijuKun(viewModel: PhilosophyViewModel, navController: NavHostController, ne
 
     LaunchedEffect(Unit) {
         delay(timerDuration)
-        navController.navigate(nextRoute.route)
+        onSplashFinished()
     }
 
     val configuration = LocalConfiguration.current

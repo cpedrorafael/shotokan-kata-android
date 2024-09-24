@@ -1,12 +1,13 @@
 package com.guayaba.shotokankata.ui.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.guayaba.shotokankata.data.KataInfo
 import com.guayaba.shotokankata.ui.calendar.SessionCalendarPage
@@ -27,11 +28,12 @@ fun AppNavigation(
     philosophyViewModel: PhilosophyViewModel,
     kataViewModel: KataViewModel,
     quizViewModel: QuizViewModel,
-    sessionViewModel: SessionViewModel
+    sessionViewModel: SessionViewModel,
 ) {
+
     NavHost(
         navController = navController,
-        startDestination = Routes.NIJU_KUN_RANDOM.route
+        startDestination = Routes.NIJU_KUN_RANDOM.route,
     ) {
         composable(
             Routes.NIJU_KUN_RANDOM.route,
@@ -48,14 +50,15 @@ fun AppNavigation(
                 scaleOutOfContainer()
             }
         ) {
-            NijuKun(viewModel = philosophyViewModel, navController, Routes.SESSION_CALENDAR)
+            NijuKun(
+                viewModel = philosophyViewModel,
+            ){
+                navController.navigate(Routes.SESSION_CALENDAR.route)
+            }
         }
 
         composable(Routes.HOME.route) {
-            KataList(kataViewModel, onNavigationPopBackstack = {
-                navController.popBackStack()
-                sessionViewModel.update()
-            }, onNavigateToDetails = { kataId ->
+            KataList(kataViewModel, onNavigateToDetails = { kataId ->
                 navController.navigate("details/$kataId")
             })
         }

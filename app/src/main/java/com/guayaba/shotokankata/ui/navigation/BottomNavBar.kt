@@ -15,8 +15,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun BottomNavigationBar(navController: NavController, modifier: Modifier) {
-        NavigationBar(modifier) {
+fun BottomNavigationBar(
+    navController: NavController,
+    modifier: Modifier,
+    onNavEventTriggered: () -> Unit
+) {
+    NavigationBar(modifier) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -27,10 +31,17 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier) {
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
+                        onNavEventTriggered()
                     }
                 },
-                icon = { Icon(painterResource(id = item.resource), modifier = Modifier.size(32.dp), contentDescription = item.label) },
-                label = { Text(item.label, style = MaterialTheme.typography.labelLarge) }
+                icon = {
+                    Icon(
+                        painterResource(id = item.resource),
+                        modifier = Modifier.size(24.dp),
+                        contentDescription = item.label
+                    )
+                },
+                label = { Text(item.label, style = MaterialTheme.typography.labelMedium) }
             )
         }
     }

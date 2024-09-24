@@ -62,14 +62,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun KataList(
     viewModel: KataViewModel,
-    onNavigationPopBackstack: () -> Unit,
     onNavigateToDetails: (Int) -> Unit
 ) {
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Shotokan Karate Katas",
-                onBackArrowPressed = { onNavigationPopBackstack() })
+                title = "Shotokan Karate Katas")
         }
     ) { paddingValues ->
         Column(
@@ -79,35 +77,6 @@ fun KataList(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-//            Box {
-//
-//                Button(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    onClick = {
-//                        navController.navigate("quizzes")
-//                    },
-//                ) {
-//                    Text("Test your knowledge with a quiz")
-//                }
-
-//                Icon(
-//                    painter = painterResource(id = R.drawable.brain),
-//                    contentDescription = "Brain",
-//                    Modifier
-//                        .size(48.dp)
-//                        .align(BiasAlignment(0.9f, -0.1f)),
-//                    tint = Color.Unspecified
-//                )
-//            }
-
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            Text(
-//                "Or record your Kata practice",
-//                style = TextStyle(textAlign = TextAlign.Center),
-//                modifier = Modifier.fillMaxWidth()
-//            )
 
             Spacer(modifier = Modifier.height(8.dp))
 

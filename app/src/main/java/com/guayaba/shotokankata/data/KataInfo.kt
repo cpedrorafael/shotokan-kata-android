@@ -25,11 +25,11 @@ enum class KataInfo(val id: Int, val kataName: String, val japaneseName: String,
     GOJUSHIHO_DAI(22, "Gojushiho-dai", "五十四歩大", 62),
     GOJUSHIHO_SHO(23, "Gojushijo-sho", "五十四歩小", 65),
     MEIKYO(24, "Meikyo", "明鏡", 32),
-    WANKAN(25, "Wankan", "王冠", 24),
-    JIIN(26, "Ji'in", "慈陰", 38);
+    WANKAN(25, "Wankan", "王冠", 22),
+    JIIN(26, "Ji'in", "慈陰", 35);
 
     companion object {
         fun findById(id: Int) = KataInfo.entries.find { it.id == id }
-            ?: throw IllegalStateException("Kata not found for provided ID")
+            ?: throw IllegalStateException("Kata not found for provided ID: $id")
     }
 }

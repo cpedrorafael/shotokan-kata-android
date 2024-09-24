@@ -11,12 +11,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.guayaba.shotokankata.core.notifications.NotificationReceiver
 import com.guayaba.shotokankata.core.notifications.NotificationUtils
@@ -24,6 +30,7 @@ import com.guayaba.shotokankata.ui.calendar.SessionViewModel
 import com.guayaba.shotokankata.ui.kata.KataViewModel
 import com.guayaba.shotokankata.ui.navigation.AppNavigation
 import com.guayaba.shotokankata.ui.navigation.BottomNavigationBar
+import com.guayaba.shotokankata.ui.navigation.Routes
 import com.guayaba.shotokankata.ui.philosophy.PhilosophyViewModel
 import com.guayaba.shotokankata.ui.quiz.QuizViewModel
 import com.guayaba.shotokankata.ui.theme.ShotokanKataTheme
@@ -43,10 +50,27 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    when (navBackStackEntry?.destination?.route) {
+                        Routes.SESSION_CALENDAR.route -> {
+                            bottomBarState.value = true
+                        }
+                        Routes.HOME.route -> {
+                            bottomBarState.value = true
+                        }
+                        Routes.QUIZZES.route -> {
+                            bottomBarState.value = true
+                        }
+                        else -> {
+                            bottomBarState.value = false
+                        }
+                    }
+
 
                     Box(
                         Modifier.padding(8.dp)
-                    ) {
+                    ){
                         NotificationPermissionRequest {
                             NotificationUtils.createNotificationChannel(this@MainActivity)
                             setDailyNotification()
@@ -58,10 +82,13 @@ class MainActivity : ComponentActivity() {
                             quizViewModel,
                             sessionViewModel
                         )
-                        
-                        BottomNavigationBar(navController = navController, modifier = Modifier.align(
-                            Alignment.BottomCenter))
 
+                        if(bottomBarState.value) {
+                            BottomNavigationBar(navController = navController, modifier = Modifier.align(
+                                Alignment.BottomCenter).height(64.dp)){
+                                sessionViewModel.update()
+                            }
+                        }
                     }
                 }
             }

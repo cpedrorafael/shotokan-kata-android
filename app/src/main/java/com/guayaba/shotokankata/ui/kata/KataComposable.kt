@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: () -> Unit) {
+fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: (() -> Unit)?) {
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -52,10 +52,12 @@ fun KataView(viewModel: KataViewModel, kataInfo: KataInfo, navigateBack: () -> U
                     Text("(${kataInfo.japaneseName})", fontSize = TextUnit(16.0F, TextUnitType.Sp))
                 }
             }, navigationIcon = {
-                IconButton(onClick = navigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back"
-                    )
+                if (navigateBack != null) {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back"
+                        )
+                    }
                 }
             })
         },
