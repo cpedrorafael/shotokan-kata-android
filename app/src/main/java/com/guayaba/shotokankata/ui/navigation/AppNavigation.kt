@@ -30,11 +30,13 @@ fun AppNavigation(
     kataViewModel: KataViewModel,
     quizViewModel: QuizViewModel,
     sessionViewModel: SessionViewModel,
+    modifier: Modifier
 ) {
 
     NavHost(
         navController = navController,
         startDestination = Routes.NIJU_KUN_RANDOM.route,
+        modifier = modifier
     ) {
         composable(
             Routes.NIJU_KUN_RANDOM.route,

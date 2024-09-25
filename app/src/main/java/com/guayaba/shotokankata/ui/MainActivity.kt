@@ -13,7 +13,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -86,14 +88,18 @@ class MainActivity : ComponentActivity() {
                             philosophyViewModel,
                             kataViewModel,
                             quizViewModel,
-                            sessionViewModel
+                            sessionViewModel,
+                            Modifier.fillMaxHeight(0.9f)
                         )
 
                         AnimatedVisibility(
                             visible = bottomBarState.value,
                             enter = slideInVertically(initialOffsetY = { it }),
                             exit = slideOutVertically(targetOffsetY = { it }),
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .fillMaxHeight(0.1f)
+                                .fillMaxWidth()
                         ) {
                             BottomNavigationBar(
                                 navController = navController, modifier = Modifier

@@ -50,9 +50,10 @@ class KataStorageImpl : KataStorage {
 
     override suspend fun getAllSessionsForKata(kataId: Int): KataCount {
         val deferred = ioScope.async {
-            return@async database.kataRecordDAO().getCountByKataId(kataId) ?: KataCount(kataId, 0)
+            return@async database.kataRecordDAO().getCountByKataId(kataId)
         }
-        return deferred.await()
+        val result = deferred.await()
+        return result?: KataCount(kataId, 0)
     }
 
     override suspend fun getAllSessionsInDate(date: LocalDate): List<KataRecord> {
