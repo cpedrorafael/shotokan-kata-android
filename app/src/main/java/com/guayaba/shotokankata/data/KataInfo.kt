@@ -23,8 +23,8 @@ enum class KataInfo(val id: Int, val kataName: String, val japaneseName: String,
     UNSU(20, "Unsu", "雲手", 48),
     SOCHIN(21, "Sochin", "壯鎭", 40),
     GOJUSHIHO_DAI(22, "Gojushiho-dai", "五十四歩大", 62),
-    GOJUSHIHO_SHO(23, "Gojushijo-sho", "五十四歩小", 65),
-    MEIKYO(24, "Meikyo", "明鏡", 32),
+    GOJUSHIHO_SHO(23, "Gojushiho-sho", "五十四歩小", 65),
+    MEIKYO(24, "Meikyo", "明鏡", 33),
     WANKAN(25, "Wankan", "王冠", 22),
     JIIN(26, "Ji'in", "慈陰", 35);
 
