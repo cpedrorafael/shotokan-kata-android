@@ -83,18 +83,22 @@ class SessionViewModel : ViewModel() {
     private suspend fun getDates(yearMonth: YearMonth): List<CalendarUiState.Date> {
         val records = getRecords(yearMonth)
         val datesFromRecords = records.map { it.dateTime.toLocalDate() }
-        return yearMonth.getDayOfMonthStartingFromSunday()
+        return yearMonth.getDaysOfMonth()
             .map { date ->
-                CalendarUiState.Date(
-                    dayOfMonth = if (date.monthValue == yearMonth.monthValue) {
-                        "${date.dayOfMonth}"
-                    } else {
-                        "" // Fill with empty string for days outside the current month
-                    },
-                    isSelected = date.isEqual(LocalDate.now()) && date.monthValue == yearMonth.monthValue,
-                    localDate = date,
-                    trained = date in datesFromRecords
-                )
+                if(date == null){
+                    CalendarUiState.Date.Empty
+                } else {
+                    CalendarUiState.Date(
+                        dayOfMonth = if (date.monthValue == yearMonth.monthValue) {
+                            "${date.dayOfMonth}"
+                        } else {
+                            "" // Fill with empty string for days outside the current month
+                        },
+                        isSelected = date.isEqual(LocalDate.now()) && date.monthValue == yearMonth.monthValue,
+                        localDate = date,
+                        trained = date in datesFromRecords
+                    )
+                }
             }
     }
 

@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -61,6 +62,7 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
     }
 
     Scaffold(
+        modifier = Modifier.testTag("Word Quiz"),
         topBar = {
             TopAppBar(title = {
                 Text(
@@ -116,15 +118,16 @@ fun WordQuiz(viewModel: QuizViewModel, navHostController: NavHostController, qui
 
                         Spacer(modifier = Modifier.height(16.dp))
                         val wrongAnswers = viewModel.getWrongAnswers()
-                        Text(
-                            "What you got wrong: ",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+
                         if (wrongAnswers.isNotEmpty()) {
                             Column(Modifier.fillMaxWidth()) {
+                                Text(
+                                    "What you got wrong: ",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
                                 wrongAnswers.map {
                                     Text(
                                         text = it,
@@ -177,7 +180,8 @@ fun QuestionView(question: QuizQuestion, viewModel: QuizViewModel, onAnswer: (St
         ) {
             items(question.allAnswers.size) {
                 val variant = question.allAnswers[it]
-                TextAnswerButton(answer = variant) { answer ->
+                val testTag = if(variant == question.answer) "Correct Answer" else "Wrong Answer"
+                TextAnswerButton(answer = variant, testTag) { answer ->
                     onAnswer(answer)
                 }
             }
@@ -190,10 +194,10 @@ fun QuestionView(question: QuizQuestion, viewModel: QuizViewModel, onAnswer: (St
 }
 
 @Composable
-fun TextAnswerButton(answer: String, onAnswer: (String) -> Unit) {
+fun TextAnswerButton(answer: String, testTag: String, onAnswer: (String) -> Unit) {
     OutlinedButton(
         onClick = { onAnswer(answer) },
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).height(64.dp)
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).height(64.dp).testTag(testTag),
     ) {
         Text(text = answer, fontSize = 25.sp)
     }
